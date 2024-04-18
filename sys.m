@@ -8,6 +8,7 @@ B7=tf(50,1);
 B8=tf(5,1);
 B9=tf(50,1);
 B10=tf(50,1);
+
 BlockMat=append(B1,B2,B3,B4,B5,B6,B7,B8,B9,B10);
 input_loc=1;
 output_loc=[1,5];
@@ -33,7 +34,7 @@ t = 0:0.01:10; % Define time from 0 to 10 seconds with a step of 0.01
 u = 1 * stepfun(t, 0); % 1N step input starting at t=0
 
 % Simulate the system
-[y, t, x] = lsim(system, u, t);
+y=lsim(system,u,t);
 
 % Plot the response using stepplot
 stepplot(system, t, y);
