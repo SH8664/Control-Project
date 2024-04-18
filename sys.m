@@ -28,16 +28,17 @@ system=connect(BlockMat,connect_map,input_loc,output_loc);
 
 %req4-->entering input 1N
 % Define time vector for simulation
-t = 0:0.01:10; % Define time from 0 to 10 seconds with a step of 0.01
+%t = 0:0.01:10; % Define time from 0 to 10 seconds with a step of 0.01
 
 % Generate step input signal
-u = 1 * stepfun(t, 0); % 1N step input starting at t=0
+%u = 1 * stepfun(t, 0); % 1N step input starting at t=0
 
 % Simulate the system
-y=lsim(system,u,t);
+%y=lsim(system,u,t);
 
 % Plot the response using stepplot
-stepplot(system, t, y);
+p=stepplot(system);
+setoptions(p,'RiseTimeLimits',[0,1]);
 
 % Customize the plot
 title('Step Response of the System to a 1N Step Input');
