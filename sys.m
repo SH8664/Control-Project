@@ -1,3 +1,6 @@
+clear;
+close all;
+clc;
 B1=tf(1,[100,0,0]);
 B2=tf([100,0],1);
 B3=tf(50,1);
@@ -26,21 +29,68 @@ connect_map=[1,-2,-4, 9 ,-3 ;
 system=connect(BlockMat,connect_map,input_loc,output_loc);
 
 
-%req4-->entering input 1N
-% Define time vector for simulation
-%t = 0:0.01:10; % Define time from 0 to 10 seconds with a step of 0.01
 
-% Generate step input signal
-%u = 1 * stepfun(t, 0); % 1N step input starting at t=0
-
-% Simulate the system
-%y=lsim(system,u,t);
 
 % Plot the response using stepplot
+transfer_fun = tf(system);
+X1_U = transfer_fun(1);
+X2_U = transfer_fun(2);
+display(X1_U);
+display(X2_U);
+
+
+%test stability od X1
+figure;
+pzmap(X1_U);
+hold on;
+
+figure;
 p=stepplot(system);
 setoptions(p,'RiseTimeLimits',[0,1]);
+hold on;
 
-% Customize the plot
-title('Step Response of the System to a 1N Step Input');
-xlabel('Time (s)');
-ylabel('Output');
+% Get step response information for each output
+info_X1_U = stepinfo(X1_U);
+info_X2_U = stepinfo(X2_U);
+
+
+
+
+sys = feedback(X2_U,1);
+
+figure;
+p=stepplot(2*sys);
+setoptions(p,'RiseTimeLimits',[0,1]);
+title("response of X2 when Xd = 2m ");
+
+disp(stepinfo(sys));
+
+values = [1, 10,100,1000];
+for i = 1 : length(values)
+    Kp = values(i);
+    display(Kp);
+    sys = feedback(Kp*X2_U,1);
+    figure;
+    p=stepplot(2*sys);
+    setoptions(p,'RiseTimeLimits',[0,1]);
+    title(strcat("Transient Response Kp =  ",num2str(Kp)));
+    hold on;
+    disp(stepinfo(sys));
+end
+
+
+% Using PI controller 
+Kp = 91;
+Ki = 8;
+PI_controller = tf([Kp Ki], [1 0]);
+sys = feedback(PI_controller*X2_U,1);
+figure;
+t = 0:0.01:10; % Adjust time vector as needed
+[y, t] = step(4*sys, t);
+p=stepplot(4*sys);
+setoptions(p,'RiseTimeLimits',[0,1]);
+title(strcat("Transient Response Kp =  ",num2str(Kp)," and Ki =  ",num2str(Ki)));
+hold on;
+disp("Error = ")
+disp(4-y(end));
+disp(stepinfo(sys));
