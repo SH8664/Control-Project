@@ -63,6 +63,11 @@ p=stepplot(2*sys);
 setoptions(p,'RiseTimeLimits',[0,1]);
 title("response of X2 when Xd = 2m ");
 
+
+t = 0:0.01:10; % Adjust time vector as needed
+[y, t] = step(2*sys, t);
+disp("Error = ")
+disp(2-y(end));
 disp(stepinfo(sys));
 
 values = [1, 10,100,1000];
